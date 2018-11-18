@@ -111,7 +111,7 @@ router.get('/place/:code', connectDb, async ctx => {
       JOIN census_place p ON pg.place_id = p.id
       JOIN census_group g ON pg.group_id = g.id
       JOIN census_groupclass gc ON g.groupclass_id = gc.id
-    WHERE p.code = $1::text AND pg.value != 0`,
+    WHERE p.code = $1::text`,
     `SELECT
       ch.code, ch.name, ch.area, ch.population
     FROM census_place ch
@@ -137,7 +137,7 @@ router.get('/place/:code', connectDb, async ctx => {
     groups[theClass] = {
       total: sumBy(data.filter(x => x.applicable), 'value'),
       notapp: sumBy(data.filter(x => !x.applicable), 'value'),
-      groups: reverse(sortBy(data, ['applicable', 'value']))
+      groups: reverse(sortBy(data, ['applicable', 'value'])).filter(x => x.value != 0)
     }
   }
 
