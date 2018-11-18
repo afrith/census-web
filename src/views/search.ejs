@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Census 2011: Search Results: “<%= searchstring %>”</title>
+    <%- include('partials/head'); %>
+  </head>
+  <body>
+    <div class="container">
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Search for “<%= searchstring %>”</li>
+        </ol>
+      </nav>
+
+      <h2>Census 2011 Search Results for “<%= searchstring %>”</h2>
+
+      <table class="table mt-4">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type of place</th>
+            <th>Province</th>
+            <th class="number">Population</th>
+            <th class="number">Area (km²)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const result of results) { %>
+          <tr>
+            <td><a href="/place/<%= result.code %>"><%= result.name %></a></td>
+            <td><%= result.placetype %></td>
+            <td><%= result.province %></td>
+            <td class="number"><%= formatInt(result.population) %></td>
+            <td class="number"><%= formatDec(result.area) %></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <h2>Search again</h2>
+
+      <%- include('partials/searchform'); %>
+
+      <%- include('partials/footer') %>
+    </div>
+  </body>
+</html>

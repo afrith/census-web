@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Census 2011</title>
+    <%- include('partials/head'); %>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Census 2011</h1>
+
+      <p>This site provides online access to a selection of results from South Africa's <a href="http://www.statssa.gov.za/?page_id=3839">Census 2011</a> down to the “sub place” layer of detail, as released in the Community Profile Database DVD set. Please note the <a href="#footer">disclaimer</a> at the foot of this page.</p>
+
+      <div class="row">
+        <div class="col-lg-6">
+
+          <h2>Search</h2>
+
+          <%- include('partials/searchform'); %>
+
+          <h2>Navigate</h2>
+
+          <p>You can select one of the provinces below and then navigate further down the hierarchy of places.</p>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th class="number">Population</th>
+                <th class="number">Area (km²)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (const prov of provinces) { %>
+              <tr>
+                <td><a href="/place/<%= prov.code %>"><%= prov.name %></a></td>
+                <td class="number"><%= formatInt(prov.population) %></td>
+                <td class="number"><%= formatInt(prov.area) %></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="col-lg-6">
+
+          <h2>Place types</h2>
+
+          <p>The census results are available for geographic areas at five levels of a hierarchy:
+            <dl>
+              <dt>Provinces</dt>
+              <dd>The nine provinces of South Africa.</dd>
+              <dt>Metropolitan and District Municipalities</dt>
+              <dd>South Africa is divided into eight metropolitan municipalities and fourty-four district municipalities.</dd>
+              <dt>Local Municipalities</dt>
+              <dd>The district municipalities are divided into local municipalities. There are 226 local municipalities in South Africa.</dd>
+              <dt>Main Places</dt>
+              <dd>These are named locations determined by Statistics South Africa, which generally correspond to towns, small cities, regions of large cities, or tribal areas. Areas that do not fall within any named settlement are incorporated in a main place named for the municipality.</dd>
+              <dt>Sub Places</dt>
+              <dd>These are named locations determined by Statistics South Africa, which generally correspond to suburbs, villages, or localities. When a main place contains only one sub place, that sub place is named for the main place with a suffix of “SP”.</dd>
+            </dl>
+          </p>
+        
+        </div>
+      </div>
+
+      <%- include('partials/footer') %>
+    </div>
+  </body>
+</html>

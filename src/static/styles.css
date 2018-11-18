@@ -1,0 +1,24 @@
+td.number, th.number {
+  text-align: right;
+}
+
+.disclaimer {
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+@media (max-width: 991px) {
+  .card-columns {
+    column-count: 1
+  }
+}
+
+@media (min-width: 992px) {
+  .card-columns {
+    column-count: 2
+  }
+}
+
+#place-map {
+  height: 300px;
+}
