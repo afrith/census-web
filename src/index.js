@@ -23,7 +23,8 @@ const pool = new Pool({connectionString: process.env.DB_URL})
 render(app, {
   root: path.join(__dirname, 'views'),
   layout: false,
-  viewExt: 'ejs'
+  viewExt: 'ejs',
+  writeResp: false
 })
 
 const connectDb = async (ctx, next) => {
@@ -53,7 +54,7 @@ router.get('/', connectDb, async ctx => {
     ORDER BY place.name`
   )
 
-  await ctx.render('index', {
+  ctx.body = await ctx.render('index', {
     provinces: results.rows,
     formatInt, formatDec
   })
@@ -81,7 +82,7 @@ router.get('/search/:string', connectDb, async ctx => {
     [`%${searchstring}%`]
   )
 
-  await ctx.render('search', {
+  ctx.body = await ctx.render('search', {
     searchstring,
     results: results.rows,
     formatInt, formatDec
@@ -143,7 +144,7 @@ router.get('/place/:code', connectDb, async ctx => {
 
   const children = results[3].rows
 
-  await ctx.render('place', {
+  ctx.body = await ctx.render('place', {
     place, parents, groups, children,
     formatInt, formatDec, formatPerc
   })
@@ -177,6 +178,27 @@ router.get('/place/:code/geom', connectDb, async ctx => {
 
   ctx.set('Content-Type', 'application/geo+json')
   ctx.body = JSON.stringify(feature)
+})
+
+router.get('/place/:code/kml', connectDb, async ctx => {
+  const result = await ctx.db.query(
+    `SELECT p.id, p.code, p.name, pt.descrip AS placetype,
+      ST_AsKML(geom, 10) as kml
+    FROM census_place p JOIN census_placetype pt
+      ON p.placetype_id = pt.id
+    WHERE p.code = $1::text`,
+    [ctx.params.code]
+  )
+
+  if (result.rows.length == 0) {
+    ctx.throw(404)
+  }
+
+  const place = result.rows[0]
+
+  ctx.set('Content-Type', 'application/vnd.google-earth.kml+xml')
+  ctx.set('Content-Disposition', `attachment; filename=${place.code}.kml`)
+  ctx.body = await ctx.render('kml', {place})
 })
 
 app.use(router.routes()).use(router.allowedMethods());

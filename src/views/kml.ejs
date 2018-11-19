@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+    <Style id="theStyle">
+        <IconStyle><scale>0</scale></IconStyle>
+        <LabelStyle><color>ff0000ff</color></LabelStyle>
+        <LineStyle><color>ff0000ff</color></LineStyle>
+        <PolyStyle><fill>0</fill></PolyStyle>
+    </Style>
+    <Placemark>
+        <styleUrl>#theStyle</styleUrl>
+        <name><%= place.code %>></name>
+        <description><%= place.placetype %> <%= place.code %></description>
+        <%- place.kml %>
+    </Placemark>
+</Document>
+</kml>
