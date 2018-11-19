@@ -61,14 +61,14 @@ router.get('/', connectDb, async ctx => {
 
 router.get('/search', async ctx => {
   if (ctx.query.q) {
-    ctx.redirect(`/search/${encodeURIComponent(ctx.query.q)}`)
+    ctx.redirect(`/search/${encodeURIComponent(ctx.query.q.trim())}`)
   } else {
     ctx.redirect('/')
   }
 })
 
 router.get('/search/:string', connectDb, async ctx => {
-  const searchstring = decodeURIComponent(ctx.params.string.replace(/\+/g, ' '))
+  const searchstring = decodeURIComponent(ctx.params.string.replace(/\+/g, ' ')).trim()
 
   const results = await ctx.db.query(
     `SELECT place.code, place.name, pt.descrip as placetype,
