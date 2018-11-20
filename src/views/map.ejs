@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Census 2011: <%= place.placetype %>: <%= place.name %>: Map</title>
+    
+    <%- include('partials/head'); %>
+    <link rel="stylesheet" type="text/css" href="/bigmap.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <% for (const p of parents) { %>
+              <li class="breadcrumb-item"><a href="/place/<%= p.code %>"><%= p.name %></a></li>
+            <% } %>
+            <li class="breadcrumb-item" aria-current="page"><a href="/place/<%= place.code %>"><%= place.name %></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Map</li>
+          </ol>
+        </nav>
+
+        <h3>Map of <%= place.name %> <%= place.placetype %></h3>
+      </div>
+
+      <div class="big-map" id="place-map"></div>
+
+      <div class="footer">
+        <%- include('partials/footer') %>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/promise-polyfill@8.1.0/dist/polyfill.min.js"
+      integrity="sha384-qPBjsjz9J5u5uee5UQzECfhC8fkjgvJmZiKKAU79FlHjTl5UNrhS4rsaneqtCRQW"
+      crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/whatwg-fetch@3.0.0/dist/fetch.umd.js"
+      integrity="sha384-FhKuW+ZR2hflgmnV7xCkMJCI8bMePuvlqAW0lizfVmOBLfWyB3Wk+dP6+47hN/rP"
+      crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+      integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+      crossorigin=""></script>
+    <script type="text/javascript">var placecode = '<%= place.code %>';</script>
+    <script type="text/javascript" src="/map.js" async></script>
+  </body>
+</html>

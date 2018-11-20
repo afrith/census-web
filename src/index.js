@@ -89,23 +89,26 @@ router.get('/search/:string', connectDb, async ctx => {
   })
 })
 
+const placeQuery = `SELECT p.id, p.code, p.name, pt.descrip AS placetype,
+p.population, p.households, p.area
+FROM census_place p JOIN census_placetype pt
+ON p.placetype_id = pt.id
+WHERE p.code = $1::text`
+
+const parentsQuery = `WITH RECURSIVE placetree AS (
+  SELECT id, code, name, parent_id, 0 as n
+    FROM census_place WHERE code = $1::text
+  UNION ALL
+  SELECT p.id, p.code, p.name, p.parent_id, n+1
+    FROM census_place p JOIN placetree ON p.id = placetree.parent_id
+)
+SELECT id, code, name FROM placetree
+WHERE code != $1::text
+ORDER BY n DESC`
+
 router.get('/place/:code', connectDb, async ctx => { 
   const queries = [
-    `SELECT p.id, p.code, p.name, pt.descrip AS placetype,
-      p.population, p.households, p.area
-    FROM census_place p JOIN census_placetype pt
-      ON p.placetype_id = pt.id
-    WHERE p.code = $1::text`,
-    `WITH RECURSIVE placetree AS (
-      SELECT id, code, name, parent_id, 0 as n
-        FROM census_place WHERE code = $1::text
-      UNION ALL
-      SELECT p.id, p.code, p.name, p.parent_id, n+1
-        FROM census_place p JOIN placetree ON p.id = placetree.parent_id
-    )
-    SELECT id, code, name FROM placetree
-    WHERE code != $1::text
-    ORDER BY n DESC`,
+    placeQuery, parentsQuery,
     `SELECT
       gc.name as class, g.name as group, pg.value
     FROM census_placegroup pg
@@ -147,6 +150,23 @@ router.get('/place/:code', connectDb, async ctx => {
   ctx.body = await ctx.render('place', {
     place, parents, groups, children,
     formatInt, formatDec, formatPerc
+  })
+})
+
+
+router.get('/place/:code/map', connectDb, async ctx => {
+  const queries = [placeQuery, parentsQuery]
+
+  const results = await Promise.all(queries.map(q => ctx.db.query(q, [ctx.params.code])))
+
+  if (results[0].rows.length == 0) {
+    ctx.throw(404)
+  }
+  const place = results[0].rows[0]
+  const parents = results[1].rows
+
+  ctx.body = await ctx.render('map', {
+    place, parents
   })
 })
 

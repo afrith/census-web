@@ -38,8 +38,11 @@
           </dl>
         </div>
         <div class="col-lg-6">
-          <div id="place-map"></div>
-          <div><small><a href="/place/<%= place.code %>/kml">Download KML file</a></small></div>
+          <div class="small-map" id="place-map"></div>
+          <div><small>
+            <a href="/place/<%= place.code %>/map">View larger map</a> • 
+            <a href="/place/<%= place.code %>/kml">Download KML file</a>
+          </small></div>
         </div>
       </div>
 

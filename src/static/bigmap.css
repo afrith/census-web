@@ -1,0 +1,17 @@
+html, body {
+  height: 100%;
+}
+
+div.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+div.header, div.footer {
+  flex: 0;
+}
+
+div.big-map {
+  flex-grow: 1;
+}

@@ -19,6 +19,6 @@ td.number, th.number {
   }
 }
 
-#place-map {
+.small-map {
   height: 300px;
 }
