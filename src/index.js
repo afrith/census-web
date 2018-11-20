@@ -180,6 +180,35 @@ router.get('/place/:code/geom', connectDb, async ctx => {
   ctx.body = JSON.stringify(feature)
 })
 
+router.get('/place/:code/childgeom', connectDb, async ctx => {
+  const result = await ctx.db.query(
+    `SELECT ch.code, ch.name,
+      ST_AsGeoJSON(ch.geom, 8, 1) as geometry
+    FROM census_place ch
+      JOIN census_place pt ON ch.parent_id = pt.id
+    WHERE pt.code = $1::text`,
+    [ctx.params.code]
+  )
+
+  const features = result.rows.map(row => ({
+    type: 'Feature',
+    geometry: JSON.parse(row.geometry),
+    id: row.code,
+    properties: {
+      code: row.code,
+      name: row.name
+    }
+  }))
+
+  const collection = {
+    type: 'FeatureCollection',
+    features
+  }
+
+  ctx.set('Content-Type', 'application/geo+json')
+  ctx.body = JSON.stringify(collection)
+})
+
 router.get('/place/:code/kml', connectDb, async ctx => {
   const result = await ctx.db.query(
     `SELECT p.id, p.code, p.name, pt.descrip AS placetype,

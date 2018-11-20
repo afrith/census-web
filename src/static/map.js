@@ -22,4 +22,20 @@ window.fetch('/place/' + placecode + '/geom').then(function (response) {
   L.geoJson(feature).addTo(map);
   var bbox = feature.geometry.bbox;
   map.fitBounds([[bbox[1], bbox[0]], [bbox[3], bbox[2]]]);
+
+  return window.fetch('/place/' + placecode + '/childgeom');
+}).then(function(response) {
+  return response.json()
+}).then(function (collections) {
+  if (collections.features.length > 0) {
+    L.geoJson(collections, {
+      style: {
+        weight: 1.5,
+        fillOpacity: 0
+      },
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup('<a href="/place/' + feature.properties.code + '">' + feature.properties.name + '</a>');
+      }
+    }).addTo(map);
+  }
 });
