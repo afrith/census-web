@@ -18,7 +18,7 @@ const router = new Router();
 winston.level = 'debug'
 app.use(koaLogger(str => winston.info(str)));
 
-const pool = new Pool({connectionString: process.env.DB_URL})
+const pool = new Pool({connectionString: process.env.DATABASE_URL})
 
 render(app, {
   root: path.join(__dirname, 'views'),
