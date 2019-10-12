@@ -196,8 +196,7 @@ router.get('/place/:code/geom', connectDb, async ctx => {
     }
   }
 
-  ctx.set('Content-Type', 'application/geo+json')
-  ctx.body = JSON.stringify(feature)
+  ctx.body = feature
 })
 
 router.get('/place/:code/childgeom', connectDb, async ctx => {
@@ -225,8 +224,7 @@ router.get('/place/:code/childgeom', connectDb, async ctx => {
     features
   }
 
-  ctx.set('Content-Type', 'application/geo+json')
-  ctx.body = JSON.stringify(collection)
+  ctx.body = collection
 })
 
 router.get('/place/:code/kml', connectDb, async ctx => {
