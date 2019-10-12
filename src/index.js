@@ -15,8 +15,12 @@ types.setTypeParser(20, function(val) {
 const app = new Koa();
 const router = new Router();
 
-winston.level = 'debug'
-app.use(koaLogger(str => winston.info(str)));
+const logger = winston.createLogger({
+  format: winston.format.simple(),
+  transports: [new winston.transports.Console()]
+})
+
+app.use(koaLogger(str => logger.info(str)))
 
 const pool = new Pool({connectionString: process.env.DATABASE_URL})
 
@@ -255,9 +259,9 @@ app.use(serve(__dirname + '/static'));
 const port = process.env.PORT || 3000;
 app.listen(port, function (err) {
   if (err) {
-    winston.error('Error starting server:', err);
+    logger.error('Error starting server:', err);
     process.exit(1);
   }
 
-  winston.info('Server listening on port', port);
+  logger.info('Server listening on port', port);
 })
